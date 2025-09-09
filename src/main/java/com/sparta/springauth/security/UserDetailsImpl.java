@@ -31,6 +31,11 @@ public class UserDetailsImpl implements UserDetails {
         return user.getUsername();
     }
 
+    // 권한
+
+    /**
+     * UserDetailsImpl 저장된 authorities 값을 사용하여 간편하게 권한을 제어할 수 있습니다.
+     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         UserRoleEnum role = user.getRole();
