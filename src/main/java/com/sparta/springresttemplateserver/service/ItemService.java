@@ -39,8 +39,13 @@ public class ItemService {
         return responseDto;
     }
 
-    public Item postCall(String query, UserRequestDto requestDto) {
-        return null;
+    public Item postCall(String query, UserRequestDto userRequestDto) {
+
+        // server-server에서 itemList 조회하여 요청 받은 검색어에 맞는 item 반환
+        System.out.println("userRequestDto.getUsername() = " + userRequestDto.getUsername());
+        System.out.println("userRequestDto.getPassword() = " + userRequestDto.getPassword());
+
+        return getCallObject(query);
     }
 
     public ItemResponseDto exchangeCall(String token, UserRequestDto requestDto) {
