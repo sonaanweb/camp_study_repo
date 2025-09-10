@@ -1,11 +1,16 @@
 package com.sparta.springresttemplateclient.naver.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.json.JSONObject;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ItemDto {
 
     // 필요 데이터 가공
@@ -13,11 +18,4 @@ public class ItemDto {
     private String link;
     private String image;
     private int lprice;
-
-    public ItemDto(JSONObject itemJson) {
-        this.title = itemJson.getString("title");
-        this.link = itemJson.getString("link");
-        this.image = itemJson.getString("image");
-        this.lprice = itemJson.getInt("lprice");
-    }
 }
