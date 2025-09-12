@@ -5,10 +5,16 @@ import com.sparta.myselectshop.dto.ProductRequestDto;
 import com.sparta.myselectshop.dto.ProductResponseDto;
 import com.sparta.myselectshop.entity.Product;
 import com.sparta.myselectshop.entity.User;
+import com.sparta.myselectshop.entity.UserRoleEnum;
 import com.sparta.myselectshop.naver.dto.ItemDto;
 import com.sparta.myselectshop.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -51,18 +57,26 @@ public class ProductService {
         return new ProductResponseDto(product);
     }
 
-    // 관심상품 리스트 조회
-    public List<ProductResponseDto> getProducts(User user) {
+    // 관심상품 리스트 조회 - 반환 타입 PAGE
+    public Page<ProductResponseDto> getProducts(User user, int page, int size, String sortBy, boolean isAsc) {
 
-        List<Product> productList = productRepository.findAllByUser(user);
-        List<ProductResponseDto> responseDtoList = new ArrayList<>();
+        // true = asc / false = desc
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
 
-        // product를 하나씩 뽑으면서 -> responsedto 파라미터 생성자에 전달 -> 객체 생성 -> List에 담김
-        for (Product product : productList) { // 단축어 iter for문
-            responseDtoList.add(new ProductResponseDto(product));
+        // 유저 - 관리자 확인
+        UserRoleEnum userRoleEnum = user.getRole();
+
+        Page<Product> productList;
+
+        if(userRoleEnum.equals(UserRoleEnum.USER)){ // 일반 계정
+            productList = productRepository.findAllByUser(user, pageable);
+        } else { // 어드민
+            productList = productRepository.findAll(pageable);
         }
 
-        return responseDtoList;
+        return productList.map(ProductResponseDto::new);
 
         /** stream 사용 코드 -> 반복문 없이 데이터 변환, 필터링, 집계 가능
          * public List<ProductResponseDto> getProducts() {
@@ -80,20 +94,5 @@ public class ProductService {
                 new NullPointerException("해당 상품은 존재하지 않습니다")
         );
         product.updateByItemDto(itemDto);
-    }
-
-
-    // 관리자 조회 (전체 데이터)
-    public List<ProductResponseDto> getProducts() {
-
-        List<Product> productList = productRepository.findAll();
-        List<ProductResponseDto> responseDtoList = new ArrayList<>();
-
-        // product를 하나씩 뽑으면서 -> responsedto 파라미터 생성자에 전달 -> 객체 생성 -> List에 담김
-        for (Product product : productList) { // 단축어 iter for문
-            responseDtoList.add(new ProductResponseDto(product));
-        }
-
-        return responseDtoList;
     }
 }
