@@ -51,6 +51,7 @@ public class ProductService {
 
     // 관심상품 리스트 조회
     public List<ProductResponseDto> getProducts() {
+
         List<Product> productList = productRepository.findAll();
         List<ProductResponseDto> responseDtoList = new ArrayList<>();
 
@@ -60,5 +61,13 @@ public class ProductService {
         }
 
         return responseDtoList;
+
+        /** stream 사용 코드 -> 반복문 없이 데이터 변환, 필터링, 집계 가능
+         * public List<ProductResponseDto> getProducts() {
+         *     return productRepository.findAll().stream()
+         *             .map(ProductResponseDto::new) // Product -> ProductResponseDto 변환
+         *             .collect(Collectors.toList());
+         * }
+         */
     }
 }
