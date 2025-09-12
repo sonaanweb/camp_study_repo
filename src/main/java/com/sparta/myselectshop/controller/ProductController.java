@@ -7,6 +7,8 @@ import com.sparta.myselectshop.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -26,5 +28,11 @@ public class ProductController {
 
         // 응답 보내기
         return productService.updateProduct(id, requestDto);
+    }
+
+    // 관심 상품 리스트 조회
+    @GetMapping("/products")
+    public List<ProductResponseDto> getProducts(){ // only 조회
+        return productService.getProducts();
     }
 }
