@@ -34,12 +34,21 @@ public class Product extends Timestamped {
     @Column(nullable = false)
     private int myprice;
 
+    /**
+     * 상품 : 회원 = N : 1 = 한명의 회원은 다수의 상품을 가진다.
+     * 연관관계 방향 => 회원 객체에서 상품 객체를 조회하는 경우는 없기 때문에 N:1 단방향
+     */
+    @ManyToOne(fetch = FetchType.LAZY) // 상품 조회 시 회원 정보가 항상 필요하지 않기 때문에 lazy
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     // 추후 builder 애너테이션 사용
-    public Product(ProductRequestDto requestDto) {
+    public Product(ProductRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
         this.image = requestDto.getImage();
         this.link = requestDto.getLink();
         this.lprice = requestDto.getLprice();
+        this.user = user; // 받아올 유저
     }
 
     // update
