@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity // JPA가 관리할 수 있는 Entity 클래스 지정
 @Getter
 @Setter
@@ -41,6 +44,17 @@ public class Product extends Timestamped {
     @ManyToOne(fetch = FetchType.LAZY) // 상품 조회 시 회원 정보가 항상 필요하지 않기 때문에 lazy
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    /**
+     * 상품이 1 : 폴더가 N
+     * 주의 > mappedby(양방향) = FK를 가지고 있지 않은 쪽에서 사용
+     * 다른 엔티티의 어떤 필드가 FK 주인인지 알려주는 것.
+     * 타겟팅이 될 외래키의 주인(ProductFolder) 필드(주인의 필드 이름)이다 - join 필드명
+     * => ProductFolder 안에서 FK를 가진 필드가 product 이므로
+     * mappedBy에 적는 값은, FK를 실제로 가진 엔티티(ProductFolder)의 필드 이름을 가리킨다
+     */
+    @OneToMany(mappedBy = "product")
+    private List<ProductFolder> productFolderList = new ArrayList<>();
 
     // 추후 builder 애너테이션 사용
     public Product(ProductRequestDto requestDto, User user) {
