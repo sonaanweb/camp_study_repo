@@ -75,3 +75,7 @@ public class Product extends Timestamped {
         this.lprice = itemDto.getLprice();
     }
 }
+/**
+ * Product를 조회할 때 마다 계속해서 무조건 productFolderList의 정보가 필요하다 싶으면 = 즉시 로딩
+ * 때에 따라 필요할 수 있고 아닐 수 있으면 지연 로딩 선택
+ */
