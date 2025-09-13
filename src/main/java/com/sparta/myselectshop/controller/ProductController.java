@@ -6,12 +6,12 @@ import com.sparta.myselectshop.dto.ProductResponseDto;
 import com.sparta.myselectshop.security.UserDetailsImpl;
 import com.sparta.myselectshop.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -45,5 +45,15 @@ public class ProductController {
 
         return productService.getProducts(userDetails.getUser(),
                 page-1, size, sortBy, isAsc); // 페이지 번호 - client = 1 부터 이므로 -1
+    }
+
+    // 상품에 폴더 추가
+    @PostMapping("/products/{productId}/folder")
+    public void addFolder(@PathVariable Long productId,
+                          @RequestParam Long folderId,
+                          @AuthenticationPrincipal UserDetailsImpl userDetails){
+
+        productService.addFolder(productId, folderId, userDetails.getUser());
+        log.info("add folder controller productId={},folderId={},userId={} ", productId, folderId, userDetails.getUser().getId());
     }
 }

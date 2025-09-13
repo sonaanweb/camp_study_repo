@@ -1,14 +1,12 @@
 package com.sparta.myselectshop.controller;
 
 import com.sparta.myselectshop.dto.FolderRequestDto;
+import com.sparta.myselectshop.dto.FolderResponseDto;
 import com.sparta.myselectshop.security.UserDetailsImpl;
 import com.sparta.myselectshop.service.FolderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -32,8 +30,16 @@ public class FolderController {
         List<String> folderNames = folderRequestDto.getFolderNames(); // 반환 값 folderNames라는 이름으로
         folderService.addFolders(folderNames, userDetails.getUser());
     }
-    
-    
-    
-    // 폴더 조회
+
+
+    /**
+     * 관심 상품에 폴더 0개 ~ N개를 설정할 수 있습니다.
+     * 관심상품이 등록되는 시점에는 어느 폴더에도 저장되지 않습니다
+     * 관심상품 별로 기 생성 했던 폴더를 선택하여 추가할 수 있습니다.
+     */
+    // 폴더 조회 - 회원이 등록한 모든 폴더 조회
+    @GetMapping("/folders")
+    public List<FolderResponseDto> getFolders(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return folderService.getFolders(userDetails.getUser());
+    }
 }
