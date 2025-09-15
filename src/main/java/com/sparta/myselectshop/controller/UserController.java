@@ -87,7 +87,7 @@ public class UserController {
         String token = kakaoService.kakaoLogin(code);
 
         // Cookie 생성 및 직접 브라우저에 Set
-        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, token.substring(7));
+        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, token.substring(7)); // bearer + 공백
         cookie.setPath("/");
         response.addCookie(cookie);
 

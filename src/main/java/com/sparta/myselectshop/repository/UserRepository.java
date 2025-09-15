@@ -12,4 +12,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     // email
     Optional<User> findByEmail(String email);
+
+    // kakao id 체크
+    Optional<User> findByKakaoId(Long kakaoId);
 }
