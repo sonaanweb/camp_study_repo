@@ -74,7 +74,7 @@ class ProductServiceIntegrationTest {
         requestDto.setMyprice(myPrice);
 
         // when
-        ProductResponseDto product = productService.updateProduct(productId, requestDto);
+        ProductResponseDto product = productService.updateProduct(productId, requestDto, user);
 
         // then
         assertNotNull(product.getId());

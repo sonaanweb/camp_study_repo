@@ -13,11 +13,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.MessageSource;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class) // @Mock 사용을 위해 설정합니다.
 class ProductServiceTest {
@@ -36,6 +38,8 @@ class ProductServiceTest {
 
     @Mock
     ProductFolderRepository productFolderRepository;
+
+    MessageSource messageSource = mock(MessageSource.class);
 
     // SERVICE - updateProduct 메서드를 확인할 것이다.
     @Test
@@ -63,12 +67,12 @@ class ProductServiceTest {
         // product 객체 생성
         Product product = new Product(requestProductDto, user);
 
-        ProductService productService = new ProductService(productRepository, folderRepository, productFolderRepository);
+        ProductService productService = new ProductService(productRepository, folderRepository, productFolderRepository,messageSource);
 
         given(productRepository.findById(productId)).willReturn(Optional.of(product)); // willReturn - product 반환
 
         // when
-        ProductResponseDto result = productService.updateProduct(productId, requestMyPriceDto);
+        ProductResponseDto result = productService.updateProduct(productId, requestMyPriceDto, user);
 
         // then
         assertEquals(myprice, result.getMyprice());
@@ -84,6 +88,8 @@ class ProductServiceTest {
         }
         */
 
+        User user = new User();
+
         // given
         Long productId = 200L;
         int myprice = ProductService.MIN_MY_PRICE - 50; // 최저가 미만
@@ -91,11 +97,11 @@ class ProductServiceTest {
         ProductMypriceRequestDto requestMyPriceDto = new ProductMypriceRequestDto();
         requestMyPriceDto.setMyprice(myprice);
 
-        ProductService productService = new ProductService(productRepository, folderRepository, productFolderRepository);
+        ProductService productService = new ProductService(productRepository, folderRepository, productFolderRepository,messageSource);
 
         // when
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            productService.updateProduct(productId, requestMyPriceDto); // 실제 실행 코드
+            productService.updateProduct(productId, requestMyPriceDto, user); // 실제 실행 코드
         });
 
         // then - 메세지 체크까지

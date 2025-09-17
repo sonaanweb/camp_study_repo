@@ -28,10 +28,11 @@ public class ProductController {
 
     // 관심 상품 희망 최저가 등록하기
     @PutMapping("/products/{id}")
-    public ProductResponseDto updateProduct(@PathVariable Long id, @RequestBody ProductMypriceRequestDto requestDto) {
+    public ProductResponseDto updateProduct(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                            @PathVariable Long id, @RequestBody ProductMypriceRequestDto requestDto) {
 
         // 응답 보내기
-        return productService.updateProduct(id, requestDto);
+        return productService.updateProduct(id, requestDto, userDetails.getUser());
     }
 
     // 관심 상품 리스트 조회
