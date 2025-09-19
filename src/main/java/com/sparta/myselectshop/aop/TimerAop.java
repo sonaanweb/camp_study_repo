@@ -14,23 +14,20 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-@Slf4j(topic = "UseTimeAop")
-@Aspect
-// @Component
+@Slf4j(topic = "TimerAop") // logger
+@Aspect // AOP 기능 표기
+@Component
 @RequiredArgsConstructor
-public class UseTimeAop {
+public class TimerAop {
 
     private final ApiUseTimeRepository apiUseTimeRepository;
 
-    @Pointcut("execution(* com.sparta.myselectshop.controller.ProductController.*(..))")
-    private void product() {}
-    @Pointcut("execution(* com.sparta.myselectshop.controller.FolderController.*(..))")
-    private void folder() {}
-    @Pointcut("execution(* com.sparta.myselectshop.naver.controller.NaverApiController.*(..))")
-    private void naver() {} // 상품 관련 (네이버)
+    // pointcut : @Timer 애노테이션이 붙은 메서드만 타겟
+    // enableTimer() : 포인트컷 메서드 실행 전후로 advice 실행
+    @Pointcut("@annotation(com.sparta.myselectshop.aop.Timer)")
+    private void enableTimer() {}
 
-    // 수행되기 전, 후 최종시간 필요 AROUND
-    @Around("product() || folder() || naver()")
+    @Around("enableTimer()")
     public Object execute(ProceedingJoinPoint joinPoint) throws Throwable {
         // 측정 시작 시간
         long startTime = System.currentTimeMillis();
@@ -45,7 +42,7 @@ public class UseTimeAop {
             // 수행시간 = 종료 시간 - 시작 시간
             long runTime = endTime - startTime;
 
-            // 로그인 회원이 없는 경우, 수행시간 기록하지 않음 -> 회원 중 top5
+            // 로그인 회원이 없는 경우, 수행시간 기록하지 않음
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             if (auth != null && auth.getPrincipal().getClass() == UserDetailsImpl.class) {
                 // 로그인 회원 정보
