@@ -38,6 +38,7 @@ public class CacheConfig {
         return RedisCacheManager
                 .builder(redisConnectionFactory)
                 .cacheDefaults(configuration) // 위에 값을 `캐싱 기본`으로 설정
+                // .withInitialCacheConfigurations() -> map을 인자로 받는다(cacheNames)
                 .build();
     }
 }

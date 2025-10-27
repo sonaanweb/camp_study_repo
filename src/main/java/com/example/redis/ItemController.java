@@ -54,4 +54,12 @@ public class ItemController {
     ) {
         itemService.delete(id);
     }
+
+    /**
+     * 쿼리 파라미터로 size, page 전달하게 되면 자연스럽게 pageable에 의지 된다
+     */
+    @GetMapping("search")
+    public Page<ItemDto> search(@RequestParam(name = "q") String query, Pageable pageable){
+        return itemService.searchByName(query,pageable);
+    }
 }
