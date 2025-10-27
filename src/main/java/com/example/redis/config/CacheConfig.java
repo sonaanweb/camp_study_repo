@@ -27,8 +27,8 @@ public class CacheConfig {
                 .defaultCacheConfig()
                 // null은 캐싱 안 하겠다.
                 .disableCachingNullValues()
-                // 기본 캐시 유지 시간 (Time To Live) : 데이터가 들어갔을 때 특별한 추가 시간이 없으면 10초간만 유지
-                .entryTtl(Duration.ofSeconds(10))
+                // 기본 캐시 유지 시간 (Time To Live) : 데이터가 들어갔을 때 특별한 추가 시간이 없으면 60초간만 유지
+                .entryTtl(Duration.ofSeconds(60))
                 // 캐시를 구분하는 접두사 설정
                 .computePrefixWith(CacheKeyPrefix.simple())
                 // 캐시에 저장할 값을 어떻게 직렬화 / 역직렬화 할 것인지 설정

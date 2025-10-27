@@ -79,7 +79,7 @@ public class ItemService {
      * 아이템의 정보가 바뀌었으니,
      * 데이터를 전부 돌려준 결과가 더이상 유효하지 않다고 이야기 하는거라 생각할 수 있다.
      *
-     * 현재는 allEntries로 모든 데이터를 삭제시키는데 원한다면 key값으로 잡아서 특정 데이터만 삭제할 수 있다.
+     * key = "#id" 로도 쓸 수 있다
      */
     @CachePut(cacheNames = "itemCache", key = "args[0]")
     @CacheEvict(cacheNames = "itemAllCache", allEntries = true)
@@ -93,8 +93,17 @@ public class ItemService {
     }
 
 
+    /**
+     * [삭제]
+     * DB에서 데이터를 지우기 때문에 Redis에서도 해당 데이터는 더이상 유효하지 않아야 한다.
+     * 단일 + 전체 조회 캐시 무효화
+     * CacheEvict
+     * itemCache, itemAllCache
+     */
+    @CacheEvict(cacheNames = {"itemCache", "itemAllCache"}, key= "#id", allEntries = true)
     public void delete(Long id) {
         itemRepository.deleteById(id);
+        log.info("Deleted item: {}", id);
     }
 
 }
