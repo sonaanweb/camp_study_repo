@@ -42,3 +42,14 @@ public class CacheConfig {
                 .build();
     }
 }
+
+/**
+ *  (+) withInitialCacheConfigurations - CacheManger 설정 옵션 중 하나
+ *  각 캐시 이름 별로 초기 설정(ttl, 직렬화 방식)등을 다르게 지정할 수 있게 해주는 메서드이다.
+ *  ex) 메서드 별로 유지 시간 다름
+ *   .withInitialCacheConfigurations(Map.of(
+ *       "itemCache", defaultConfig.entryTtl(Duration.ofMinutes(5)),
+ *       "itemAllCache", defaultConfig.entryTtl(Duration.ofSeconds(30)),
+ *       "itemSearchCache", defaultConfig.entryTtl(Duration.ofMinutes(2))
+ *   ))
+ */
