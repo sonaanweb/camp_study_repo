@@ -21,6 +21,9 @@ public class RedisConfig {
         return template;
     }
 
+    /**
+     * Item Order Dto를 관리하기 위해 추가
+     */
     @Bean
     public RedisTemplate<String, ItemOrderDto> orderTemplate(
             RedisConnectionFactory redisConnectionFactory
@@ -28,7 +31,7 @@ public class RedisConfig {
         RedisTemplate<String, ItemOrderDto> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
         template.setKeySerializer(RedisSerializer.string());
-        template.setValueSerializer(RedisSerializer.java());
+        template.setValueSerializer(RedisSerializer.java()); // json으로 바꿔도 가능
         return template;
     }
 }
