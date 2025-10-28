@@ -30,11 +30,15 @@ public class CacheConfig {
                         SerializationPair.fromSerializer(RedisSerializer.java())
                 );
 
+        /**
+         * 단일 캐시 - 한 개의 객체가 조회 될 가능성 보다 전체가 조회될 가능성이 높기 때문에 설정해봄
+         * storeCache
+         */
         RedisCacheConfiguration individual = RedisCacheConfiguration
                 .defaultCacheConfig()
                 .disableCachingNullValues()
                 .entryTtl(Duration.ofSeconds(20))
-                .enableTimeToIdle()
+                .enableTimeToIdle() // 20초 이내에 다시 조회되는 캐시는 사라지지 않고 다시 카운팅
                 .computePrefixWith(CacheKeyPrefix.simple())
                 .serializeValuesWith(
                         SerializationPair.fromSerializer(RedisSerializer.json())
