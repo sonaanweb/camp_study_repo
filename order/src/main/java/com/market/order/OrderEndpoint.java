@@ -1,7 +1,9 @@
 package com.market.order;
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +18,12 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 public class OrderEndpoint {
+
+    @RabbitListener(queues = "${message.queue.err.order}")
+    public void errOrder(DeliveryMessage deliveryMessage){
+        log.info("ERROR RECEIVE !!!");
+        orderService.rollbackOrder(deliveryMessage);
+    }
 
     private final OrderService orderService;
 
@@ -39,6 +47,7 @@ public class OrderEndpoint {
     /**
      * order 요청 DTO - 실제 프로젝트에선 분리
      */
+    @Data
     public static class OrderReqDto {
         private String userId;
         private Integer productId;
@@ -59,6 +68,7 @@ public class OrderEndpoint {
         public DeliveryMessage toDeliveryMessage(UUID orderId){
             return DeliveryMessage.builder()
                     .orderId(orderId) // 전달 받은 orderId
+                    .userId(userId)
                     .productId(productId) // 구매 상품 Id
                     .productQuantity(productQuantity)
                     .payAmount(payAmount)
